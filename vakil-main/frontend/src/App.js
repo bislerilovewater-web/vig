@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
+import Lenis from '@studio-freight/lenis';
 import ChatWidget from './components/ChatWidget';
 import StatusWatcher from './components/StatusWatcher';
 import DigestWatcher from './components/DigestWatcher';
@@ -94,6 +95,17 @@ function AppContent() {
 }
 
 function App() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+    const raf = (time) => { lenis.raf(time); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+    return () => lenis.destroy();
+  }, []);
+
   return (
     <BrowserRouter>
       <AuthProvider>

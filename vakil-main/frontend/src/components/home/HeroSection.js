@@ -28,7 +28,7 @@ function CursorTrail() {
     window.addEventListener('resize', resize);
 
     const history = [];
-    const MAX = 32;
+    const MAX = 48;
 
     const onMove = (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -45,31 +45,34 @@ function CursorTrail() {
       ctx.clearRect(0, 0, W, H);
 
       if (history.length > 1) {
+        // Draw a single smooth fading line through all history points
         for (let i = 1; i < history.length; i++) {
           const prog = i / history.length;
-          const size = 0.5 + prog * 2.5;
-          const alpha = 0.08 + prog * 0.82;
+          const alpha = Math.pow(prog, 1.8) * 0.9;
+          const lineWidth = 1.2 + prog * 2.0;
 
-          if (prog < 0.6 && Math.random() > 0.85) {
-            ctx.beginPath();
-            ctx.arc(history[i].x + (Math.random() - 0.5) * 6, history[i].y + (Math.random() - 0.5) * 6, 0.8, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,230,80,${Math.random() * 0.7})`;
-            ctx.shadowColor = '#FFD700'; ctx.shadowBlur = 6;
-            ctx.fill(); ctx.shadowBlur = 0;
-          }
-
-          const g = ctx.createRadialGradient(history[i].x, history[i].y, 0, history[i].x, history[i].y, size * 2.2);
-          g.addColorStop(0, `rgba(255,230,100,${alpha})`);
-          g.addColorStop(0.5, `rgba(201,168,76,${alpha * 0.5})`);
-          g.addColorStop(1, 'rgba(201,168,76,0)');
           ctx.beginPath();
-          ctx.arc(history[i].x, history[i].y, size * 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = g;
+          ctx.moveTo(history[i - 1].x, history[i - 1].y);
+          ctx.lineTo(history[i].x, history[i].y);
+          ctx.strokeStyle = `rgba(201,168,76,${alpha})`;
+          ctx.lineWidth = lineWidth;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
           ctx.shadowColor = '#C9A84C';
-          ctx.shadowBlur = prog > 0.7 ? 8 : 2;
-          ctx.fill();
+          ctx.shadowBlur = prog > 0.75 ? 10 : 0;
+          ctx.stroke();
           ctx.shadowBlur = 0;
         }
+
+        // Bright head dot at cursor tip
+        const head = history[history.length - 1];
+        ctx.beginPath();
+        ctx.arc(head.x, head.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,230,80,0.95)';
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 16;
+        ctx.fill();
+        ctx.shadowBlur = 0;
       }
       raf = requestAnimationFrame(tick);
     };

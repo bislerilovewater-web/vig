@@ -30,13 +30,19 @@ const QUARTERS = ["Q1'21","Q2","Q3","Q4","Q1'22","Q2","Q3","Q4","Q1'23","Q2","Q3
 function AreaChart({ isInView }) {
   const canvasRef = useRef(null);
   const [tab, setTab] = useState('civil');
-  const tabRef = useRef('civil');
-  const progressRef = useRef(0);
-  const tRef = useRef(0);
-  const inViewRef = useRef(false);
-  inViewRef.current = isInView;
 
-  useEffect(() => { tabRef.current = tab; progressRef.current = 0; }, [tab]);
+  // Refs shared with the raf loop
+  const progressRef = useRef(0);
+  const tabDataRef = useRef(CHART_DATA['civil']);
+  const isInViewRef = useRef(isInView);
+  const rafRef = useRef(null);
+
+  // Keep refs in sync
+  useEffect(() => { isInViewRef.current = isInView; }, [isInView]);
+  useEffect(() => {
+    tabDataRef.current = CHART_DATA[tab];
+    progressRef.current = 0; // reset draw progress on tab switch
+  }, [tab]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -54,33 +60,32 @@ function AreaChart({ isInView }) {
     resize();
     window.addEventListener('resize', resize);
 
-    let raf;
     const draw = () => {
-      if (inViewRef.current && progressRef.current < 1) {
+      // Only advance progress when in view and not yet complete
+      if (isInViewRef.current && progressRef.current < 1) {
         progressRef.current = Math.min(progressRef.current + 0.025, 1);
       }
-      if (inViewRef.current) tRef.current += 0.025;
 
       const W = canvas.width / dpr;
       const H = canvas.height / dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
 
-      const data = CHART_DATA[tabRef.current];
+      const data = tabDataRef.current;
       const n = data.length;
-      const t = tRef.current;
       const padL = 14, padR = 14, padT = 12, padB = 22;
       const chartW = W - padL - padR;
       const chartH = H - padT - padB;
       const maxX = padL + chartW * progressRef.current;
 
+      // Static positions — no t/wave offset, so the line stays still once drawn
+      const getX = (i) => padL + (i / (n - 1)) * chartW;
       const getY = (i) => {
-        const wave = Math.sin(t * 1.5 + i * 0.7) * 0.07 + Math.sin(t * 0.9 + i * 1.1) * 0.04;
-        const v = Math.max(0.05, Math.min(0.99, data[i] + wave));
+        const v = Math.max(0.05, Math.min(0.99, data[i]));
         return padT + chartH - v * chartH * 0.9;
       };
-      const getX = (i) => padL + (i / (n - 1)) * chartW;
 
+      // Clip to how far we've drawn
       ctx.save();
       ctx.beginPath();
       ctx.rect(0, 0, maxX + 2, H);
@@ -97,6 +102,7 @@ function AreaChart({ isInView }) {
         }
       };
 
+      // Area fill
       drawCurve();
       ctx.lineTo(maxX, padT + chartH);
       ctx.lineTo(padL, padT + chartH);
@@ -108,6 +114,7 @@ function AreaChart({ isInView }) {
       ctx.fillStyle = areaGrad;
       ctx.fill();
 
+      // Line stroke
       drawCurve();
       ctx.strokeStyle = '#C9A84C';
       ctx.lineWidth = 2.2;
@@ -117,6 +124,7 @@ function AreaChart({ isInView }) {
       ctx.stroke();
       ctx.shadowBlur = 0;
 
+      // Dots
       for (let i = 0; i < n; i++) {
         if (getX(i) > maxX + 1) break;
         ctx.beginPath();
@@ -130,19 +138,25 @@ function AreaChart({ isInView }) {
 
       ctx.restore();
 
-      ctx.font = `${10}px Inter,sans-serif`;
+      // X-axis labels
+      ctx.font = '10px Inter,sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.38)';
       ctx.textAlign = 'center';
       for (let i = 0; i < n; i += 3) {
         ctx.fillText(QUARTERS[i], getX(i), H - 4);
       }
 
-      raf = requestAnimationFrame(draw);
+      rafRef.current = requestAnimationFrame(draw);
     };
-    draw();
 
-    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(raf); };
-  }, []);
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []); // Single loop — runs once, reads from refs
 
   const tabs = [
     { key: 'civil', label: 'Civil' },
@@ -192,7 +206,6 @@ function LiveCaseConsole({ isInView }) {
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />AI Active
         </span>
       </div>
-
       <div className="px-5 py-4 space-y-5 flex-1">
         {CONSOLE_ROWS.map((row, i) => (
           <div key={i}>

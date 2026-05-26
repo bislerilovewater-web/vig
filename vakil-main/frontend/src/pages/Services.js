@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 import {
   FileText, Scale, Users, Video, Building2, Calendar,
   ScrollText, Map, Mic2, BookOpen, ArrowRight, Shield,
@@ -290,6 +291,7 @@ const Services = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

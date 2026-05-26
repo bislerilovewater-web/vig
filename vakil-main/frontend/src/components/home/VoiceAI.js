@@ -37,10 +37,7 @@ function LissajousCanvas({ onDone }) {
         const y = cy + B * Math.sin(t);
         trail.push({ x, y });
         if (trail.length > MAX_TRAIL) trail.shift();
-
-        if (t >= Math.PI * 2 && !doneFired.current) {
-          fading = true;
-        }
+        if (t >= Math.PI * 2 && !doneFired.current) fading = true;
       } else {
         fadeAlpha -= 0.035;
         if (fadeAlpha <= 0 && !doneFired.current) {
@@ -82,17 +79,6 @@ function LissajousCanvas({ onDone }) {
         ctx.shadowBlur = 0;
       }
 
-      if (!fading && Math.random() > 0.55 && trail.length > 5) {
-        const si = Math.floor(Math.random() * trail.length);
-        ctx.beginPath();
-        ctx.arc(trail[si].x, trail[si].y, Math.random() * 1.8 + 0.4, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,230,100,${Math.random() * 0.9})`;
-        ctx.shadowColor = '#FFD700';
-        ctx.shadowBlur = 8;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-
       raf = requestAnimationFrame(tick);
     };
     tick();
@@ -106,39 +92,55 @@ const BASE_HEIGHTS = [16, 28, 48, 65, 80, 92, 75, 96, 82, 68, 90, 76, 56, 88, 70
 
 function EqualizerBars({ active }) {
   const [heights, setHeights] = useState(BASE_HEIGHTS.map(() => 0));
-  const phaseRef = useRef('growing');
+  const phaseRef = useRef('idle');
   const growRef = useRef(0);
   const tRef = useRef(0);
   const rafRef = useRef();
 
   useEffect(() => {
-    if (!active) return;
-    phaseRef.current = 'growing';
-    growRef.current = 0;
-    tRef.current = 0;
+    if (!active) {
+      phaseRef.current = 'idle';
+      growRef.current = 0;
+      tRef.current = 0;
+      setHeights(BASE_HEIGHTS.map(() => 0));
+      return;
+    }
 
-    const animate = () => {
-      if (phaseRef.current === 'growing') {
-        growRef.current = Math.min(growRef.current + 0.018, 1);
-        const e = 1 - Math.pow(1 - growRef.current, 3);
-        setHeights(BASE_HEIGHTS.map(h => h * e));
-        if (growRef.current >= 1) phaseRef.current = 'oscillating';
-      } else {
-        tRef.current += 0.04;
-        const t = tRef.current;
-        setHeights(BASE_HEIGHTS.map((base, i) => {
-          const wave = Math.sin(t * 2.2 + i * 0.45) * 16 + Math.sin(t * 1.4 + i * 0.8) * 9;
-          return Math.max(6, Math.min(100, base + wave));
-        }));
-      }
+    // Short delay after phase switch, then grow all bars uniformly together
+    const delay = setTimeout(() => {
+      phaseRef.current = 'growing';
+      growRef.current = 0;
+
+      const animate = () => {
+        if (phaseRef.current === 'growing') {
+          growRef.current = Math.min(growRef.current + 0.022, 1);
+          const e = 1 - Math.pow(1 - growRef.current, 3);
+          // All bars grow uniformly — same progress applied to all
+          setHeights(BASE_HEIGHTS.map(h => h * e));
+          if (growRef.current >= 1) {
+            phaseRef.current = 'oscillating';
+          }
+        } else if (phaseRef.current === 'oscillating') {
+          tRef.current += 0.04;
+          const t = tRef.current;
+          setHeights(BASE_HEIGHTS.map((base, i) => {
+            const wave = Math.sin(t * 2.2 + i * 0.45) * 14 + Math.sin(t * 1.4 + i * 0.8) * 8;
+            return Math.max(6, Math.min(100, base + wave));
+          }));
+        }
+        rafRef.current = requestAnimationFrame(animate);
+      };
       rafRef.current = requestAnimationFrame(animate);
+    }, 120);
+
+    return () => {
+      clearTimeout(delay);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-    rafRef.current = requestAnimationFrame(animate);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [active]);
 
   return (
-    <div className="flex items-end justify-center gap-[3px] px-3 py-3" style={{ height: '175px' }}>
+    <div className="flex items-end justify-center gap-[3px] px-3" style={{ height: '175px', paddingTop: '12px', paddingBottom: '12px' }}>
       {heights.map((h, i) => {
         const prog = i / (heights.length - 1);
         const hue = Math.round(0 + prog * 40);
@@ -201,7 +203,7 @@ export default function VoiceAI() {
             <motion.div className="absolute inset-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: phase === 'bars' ? 1 : 0 }}
-              transition={{ duration: 0.7 }}>
+              transition={{ duration: 0.5 }}>
               <EqualizerBars active={phase === 'bars'} />
             </motion.div>
           </div>

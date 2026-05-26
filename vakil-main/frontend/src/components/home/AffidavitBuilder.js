@@ -89,11 +89,6 @@ export default function AffidavitBuilder() {
             className="text-lg text-foreground/65 font-light mb-8 leading-relaxed">
             Drafting affidavits and motions takes hours. Gavel &amp; Brief cuts it down to minutes. Input the raw facts, and watch our model structure legally sound, jurisdiction-compliant documents in real-time.
           </motion.p>
-
-          <motion.button initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.4 }}
-            className="font-semibold text-primary border-b-2 border-primary pb-1 hover:text-accent hover:border-accent transition-colors duration-300">
-            See drafting in action →
-          </motion.button>
         </div>
       </div>
     </section>

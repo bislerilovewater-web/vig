@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Scale, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import Footer from '../components/Footer';
 
 function formatApiErrorDetail(detail) {
   if (detail == null) return 'Something went wrong. Please try again.';
@@ -226,6 +227,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
