@@ -59,7 +59,7 @@ const SECONDARY = [
   { label: 'Lawyer Matching', desc: 'AI-matched lawyers by specialisation & location', icon: Users, path: '/client/lawyers', requiresAuth: true },
   { label: 'VakilVoice AI', desc: 'Voice-guided legal Q&A powered by AI', icon: Mic2, path: '/client/dashboard', requiresAuth: true },
   { label: 'Legal CRM', desc: 'Manage clients, cases and follow-ups in one place', icon: Briefcase, path: '/client/cases', requiresAuth: true },
-  { label: 'Referral Exchange', desc: 'Refer and receive cases within the VakilSetu network', icon: Star, path: '/client/dashboard', requiresAuth: true },
+  { label: 'Referral Exchange', desc: 'Refer and receive cases within the Gavel & Brief network', icon: Star, path: '/client/dashboard', requiresAuth: true },
   { label: 'Geo-Legal Map', desc: 'Find nearby courts, lawyers and legal-aid centres', icon: Map, path: '/client/lawyers', requiresAuth: true },
   { label: 'Case Tracking', desc: 'Real-time updates on your active cases and hearings', icon: ClipboardList, path: '/client/cases', requiresAuth: true },
   { label: 'IPC Browser', desc: 'Search Indian Penal Code sections and case law', icon: ScrollText, path: '/ipc', requiresAuth: false },
@@ -250,7 +250,7 @@ const Services = () => {
             ))}
           </div>
 
-          {/* ── Why VakilSetu ── */}
+          {/* ── Why Gavel & Brief ── */}
           <div className="bg-gradient-to-br from-[#6D071A] via-[#800020] to-[#5a0616] rounded-3xl shadow-[0_24px_60px_rgba(109,7,26,0.25)] p-10 sm:p-14 relative overflow-hidden">
             <div className="pointer-events-none absolute -top-20 -right-20 w-72 h-72 rounded-full bg-[#D4AF37]/8 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-white/4 blur-2xl" />
@@ -261,7 +261,7 @@ const Services = () => {
                   Trusted Platform
                 </div>
                 <h2 className="font-heading text-3xl sm:text-4xl font-bold text-white leading-tight mb-4">
-                  Why Choose VakilSetu?
+                  Why Choose Gavel & Brief?
                 </h2>
                 <p className="text-white/70 leading-relaxed">
                   India's most trusted legal-tech platform with AI intelligence and verified professionals.

@@ -64,13 +64,13 @@ const Register = () => {
           <Scale className="w-16 h-16 text-amber-400 mb-8" />
           <h1 className="font-heading text-5xl font-bold mb-6 leading-tight">
             Join
-            <span className="text-amber-400"> VakilSetu</span>
+            <span className="text-amber-400"> Gavel & Brief</span>
           </h1>
           <p className="text-xl text-slate-300 leading-relaxed mb-8">
             Create your account and get access to India's best legal professionals or start connecting with clients seeking expert legal advice.
           </p>
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-            <p className="text-slate-200 mb-4 font-medium">Why join VakilSetu?</p>
+            <p className="text-slate-200 mb-4 font-medium">Why join Gavel & Brief?</p>
             <ul className="space-y-3 text-slate-300">
               <li className="flex items-center gap-3">
                 <span className="text-amber-400">✓</span>
@@ -95,7 +95,7 @@ const Register = () => {
             <h2 className="font-heading text-4xl font-bold text-slate-900 mb-3" data-testid="register-heading">
               Create Account
             </h2>
-            <p className="text-slate-600 text-lg">Join VakilSetu today</p>
+            <p className="text-slate-600 text-lg">Join Gavel & Brief today</p>
           </div>
 
           {error && (

@@ -14,7 +14,7 @@ const NyayIDCard = ({ nyayData }) => {
     doc.rect(0, 0, 210, 45, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(22);
-    doc.text('VakilSetu - NyayID Report', 15, 20);
+    doc.text('Gavel & Brief - NyayID Report', 15, 20);
     doc.setFontSize(14);
     doc.text(nyay_id, 15, 32);
     doc.setFontSize(9);
@@ -102,7 +102,7 @@ const NyayIDCard = ({ nyayData }) => {
     const discLines = doc.splitTextToSize(disclaimer, 180);
     doc.text(discLines, 15, y + 2);
 
-    doc.save(`VakilSetu-${nyay_id}.pdf`);
+    doc.save(`Gavel & Brief-${nyay_id}.pdf`);
   };
 
   if (!nyayData) return null;
@@ -124,7 +124,7 @@ const NyayIDCard = ({ nyayData }) => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Shield className="w-5 h-5 text-amber-400" />
-                <span className="text-amber-400 text-sm font-medium">VakilSetu NyayID</span>
+                <span className="text-amber-400 text-sm font-medium">Gavel & Brief NyayID</span>
               </div>
               <h2 className="text-2xl font-bold text-white tracking-wide" data-testid="nyayid-value">{nyay_id}</h2>
             </div>

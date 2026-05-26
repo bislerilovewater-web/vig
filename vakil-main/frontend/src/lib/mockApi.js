@@ -179,7 +179,7 @@ function mockData(config) {
   if (path === '/auth/register' && method === 'post') {
     return {
       id: `demo-${body.role || 'client'}-${Date.now()}`,
-      name: body.name || 'VakilSetu User',
+      name: body.name || 'Gavel & Brief User',
       email: body.email || 'user@example.com',
       role: body.role || 'client',
       specialization: body.specialization,

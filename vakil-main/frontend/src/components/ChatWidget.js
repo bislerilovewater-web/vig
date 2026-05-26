@@ -8,7 +8,7 @@ import API_URL from '../lib/api';
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'bot', text: 'Hello! I\'m VakilSetu\'s legal assistant. Ask me any legal question about Indian law.' }
+    { role: 'bot', text: 'Hello! I\'m Gavel & Brief\'s legal assistant. Ask me any legal question about Indian law.' }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);

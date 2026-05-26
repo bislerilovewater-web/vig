@@ -69,7 +69,7 @@ const Login = () => {
           <Scale className="w-16 h-16 text-amber-400 mb-8" />
           <h1 className="font-heading text-5xl font-bold mb-6 leading-tight">
             Welcome to
-            <span className="text-amber-400"> VakilSetu</span>
+            <span className="text-amber-400"> Gavel & Brief</span>
           </h1>
           <p className="text-xl text-slate-300 leading-relaxed mb-8">
             India's most trusted legal services platform. Connect with expert lawyers and get AI-powered case analysis.
@@ -103,7 +103,7 @@ const Login = () => {
             <h2 className="font-heading text-4xl font-bold text-slate-900 mb-3" data-testid="login-heading">
               Welcome Back
             </h2>
-            <p className="text-slate-600 text-lg">Sign in to continue to VakilSetu</p>
+            <p className="text-slate-600 text-lg">Sign in to continue to Gavel & Brief</p>
           </div>
 
           {error && (
